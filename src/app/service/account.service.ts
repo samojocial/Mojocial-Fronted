@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';//To make http call
 import {Observable} from 'rxjs';//when we send push or get request to the API it going to retun observable
-import {User}from './model/user';
-import {PasswordChange} from './model/password-change';
-import{Post} from './model/post';
-import {ServerConstant} from '../constant/server-constant';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import {User}from '../model/user';
+import {PasswordChange} from '../model/password-change';
+import{Post} from '../model/post';
+import {ServerConstant} from '../constant/server-constant';
+
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +14,17 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class AccountService {
 constant:ServerConstant = new ServerConstant();//creating new object of serverconstant
 public host:string = this.constant.host;//from here we are getting the localhost
-public token:string |undefined;//token which will be a string
+  public token!: string; //token which will be a string
+//token which will be a string
   public loggInUsername!: string; //To determine the username
 //To determine the username
   public redirectURL!: string;
   private googleMapsAPIKey = 'Your google map API key';//to get the location to find from google api key
   private googleMapsAPIUrl = 'https://maps.googleapis.com/maps/api/geocode/json?latlang=';
   private jwtHelper = new JwtHelperService();//jwt dependency
+  showAlert: any;
+  redirectUrl!: string;
+  uploadeUserProfilePicture: any;
 
 
 
@@ -40,7 +45,7 @@ resetPassword(email:string){
   //if user is successfull or if he fail (only text).So i have to tell the calling application or http client to expect the response type to be in text
 }
 logOut():void{
-  this.token ;
+  this.token != null ;
   localStorage.removeItem('token');
 } //logout function
 
@@ -54,7 +59,7 @@ loadToken():void{
   localStorage.getItem('token');//it is not returning anything it only load token to the localhost of the userbrowser
 }
 
-getToken(token:string){
+getToken(token:string):any{
    return this.token;//gettoken will return the key=token
 }
 
@@ -99,7 +104,7 @@ changePassword(changePassword:PasswordChange){
 // ans the return type will be string so responsetype:text
 
 uploadUserProflePicture(profilePicture:File){
-  const fd=new FormData();
+  const fd = new FormData();
   fd.append('image',profilePicture);
   return this.http
   .post(`${this.host}/user/photo/upload`,fd,{responseType:'text'})
